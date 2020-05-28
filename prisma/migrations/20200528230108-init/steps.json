@@ -73,7 +73,7 @@
     {
       "tag": "CreateField",
       "model": "Service",
-      "field": "startsAt",
+      "field": "serviceStartsAt",
       "type": "DateTime",
       "arity": "Required"
     },
@@ -151,6 +151,41 @@
       "field": "name",
       "type": "String",
       "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Visitor",
+      "field": "street",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Visitor",
+      "field": "zip",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Visitor",
+      "field": "city",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Visitor",
+      "field": "phone",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Visitor",
+      "field": "email",
+      "type": "String",
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",

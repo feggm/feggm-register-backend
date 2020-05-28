@@ -12,7 +12,7 @@ generator client {
 
 model Service {
   id                      Int       @default(autoincrement()) @id
-  startsAt                DateTime
+  serviceStartsAt         DateTime
   registrationStartsAt    DateTime?
   numberOfAllowedVisitors Int
   visitors                Visitor[]
@@ -21,6 +21,11 @@ model Service {
 model Visitor {
   id        Int     @default(autoincrement()) @id
   name      String
+  street    String
+  zip       String
+  city      String
+  phone     String
+  email     String?
   service   Service @relation(fields: [serviceId], references: [id])
   serviceId Int
 }
