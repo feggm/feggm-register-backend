@@ -1,0 +1,26 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Service {
+  id                      Int       @default(autoincrement()) @id
+  startsAt                DateTime
+  registrationStartsAt    DateTime?
+  numberOfAllowedVisitors Int
+  visitors                Visitor[]
+}
+
+model Visitor {
+  id        Int     @default(autoincrement()) @id
+  name      String
+  service   Service @relation(fields: [serviceId], references: [id])
+  serviceId Int
+}
