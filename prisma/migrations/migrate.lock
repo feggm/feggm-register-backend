@@ -1,3 +1,4 @@
 # Prisma Migrate lockfile v1
 
 20200528230108-init
+20200529185533-add-created-at
