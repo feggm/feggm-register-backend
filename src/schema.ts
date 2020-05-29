@@ -97,6 +97,27 @@ const Mutation = objectType({
       }
     })
 
+    t.field('createAnonymousVisitor', {
+      type: 'Visitor',
+      authorize: (_root, _args, ctx) => ctx.auth.isAdmin,
+      args: {
+        serviceId: intArg({ nullable: false })
+      },
+      resolve: async (_root, args, ctx) => {
+        return await ctx.prisma.visitor.create({
+          data: {
+            name: '-',
+            street: '-',
+            zip: '-',
+            city: '-',
+            phone: '-',
+            email: '-',
+            service: { connect: { id: args.serviceId } }
+          }
+        })
+      }
+    })
+
     t.field('createService', {
       type: 'Service',
       authorize: (_root, _args, ctx) => ctx.auth.isAdmin,
