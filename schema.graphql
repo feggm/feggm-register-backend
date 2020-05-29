@@ -2,18 +2,24 @@
 ### Do not make changes to this file directly
 
 
+"""
+A date string, such as 2007-12-03, compliant with the `full-date` format
+outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for
+representation of dates and times using the Gregorian calendar.
+"""
+scalar Date
+
 scalar DateTime
 
 type Mutation {
-  createService(data: ServiceCreateInput!): Service!
+  createService(numberOfAllowedVisitors: Int!, registrationStartsAt: DateTime, serviceStartsAt: DateTime!): Service!
   createVisitor(data: VisitorCreateInput!): Visitor!
+  deleteService(where: ServiceWhereUniqueInput!): Service
 }
 
 type Query {
-  service(where: ServiceWhereUniqueInput!): Service
+  currentService: Service
   services(after: ServiceWhereUniqueInput, before: ServiceWhereUniqueInput, first: Int, last: Int, skip: Int): [Service!]!
-  visitor(where: VisitorWhereUniqueInput!): Visitor
-  visitors(after: VisitorWhereUniqueInput, before: VisitorWhereUniqueInput, first: Int, last: Int, skip: Int): [Visitor!]!
 }
 
 type Service {
@@ -21,14 +27,9 @@ type Service {
   numberOfAllowedVisitors: Int!
   registrationStartsAt: DateTime
   serviceStartsAt: DateTime!
-  visitors: [Visitor!]!
-}
 
-input ServiceCreateInput {
-  numberOfAllowedVisitors: Int!
-  registrationStartsAt: DateTime
-  serviceStartsAt: DateTime!
-  visitors: VisitorCreateManyWithoutServiceInput
+  """only authenticated admins can view visitors data"""
+  visitors: [Visitor!]!
 }
 
 input ServiceCreateOneWithoutVisitorsInput {
@@ -65,22 +66,4 @@ input VisitorCreateInput {
   service: ServiceCreateOneWithoutVisitorsInput!
   street: String!
   zip: String!
-}
-
-input VisitorCreateManyWithoutServiceInput {
-  connect: [VisitorWhereUniqueInput!]
-  create: [VisitorCreateWithoutServiceInput!]
-}
-
-input VisitorCreateWithoutServiceInput {
-  city: String!
-  email: String
-  name: String!
-  phone: String!
-  street: String!
-  zip: String!
-}
-
-input VisitorWhereUniqueInput {
-  id: Int
 }
