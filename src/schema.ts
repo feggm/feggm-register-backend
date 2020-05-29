@@ -13,6 +13,12 @@ const Service = objectType({
     t.model.serviceStartsAt()
     t.model.registrationStartsAt()
     t.model.numberOfAllowedVisitors()
+    t.field('numberOfVisitors', {
+      type: 'Int',
+      description: 'The number of places that are already reserved',
+      resolve: async (root, _args, ctx) =>
+        await ctx.prisma.visitor.count({ where: { serviceId: root.id } })
+    })
     t.field('freePlaces', {
       type: 'Int',
       description: 'The number of places that are still left free',

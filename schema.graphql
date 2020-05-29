@@ -28,6 +28,9 @@ type Service {
   freePlaces: Int!
   id: Int!
   numberOfAllowedVisitors: Int!
+
+  """The number of places that are already reserved"""
+  numberOfVisitors: Int!
   registrationStartsAt: DateTime
   serviceStartsAt: DateTime!
 
