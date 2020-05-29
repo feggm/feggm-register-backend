@@ -22,6 +22,8 @@ type Query {
 }
 
 type Service {
+  """The number of places that are still left free"""
+  freePlaces: Int!
   id: Int!
   numberOfAllowedVisitors: Int!
   registrationStartsAt: DateTime

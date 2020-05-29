@@ -13,6 +13,12 @@ const Service = objectType({
     t.model.serviceStartsAt()
     t.model.registrationStartsAt()
     t.model.numberOfAllowedVisitors()
+    t.field('freePlaces', {
+      type: 'Int',
+      description: 'The number of places that are still left free',
+      resolve: async (root, _args, ctx) =>
+        root.numberOfAllowedVisitors - await ctx.prisma.visitor.count({ where: { serviceId: root.id } })
+    })
     t.list.field('visitors', {
       type: 'Visitor',
       description: 'only authenticated admins can view visitors data',
