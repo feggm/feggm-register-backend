@@ -14,12 +14,11 @@ scalar DateTime
 type Mutation {
   createService(numberOfAllowedVisitors: Int!, registrationStartsAt: DateTime, serviceStartsAt: DateTime!): Service!
   createVisitor(data: VisitorCreateInput!): Visitor!
-  deleteService(where: ServiceWhereUniqueInput!): Service
+  deleteService(id: Int!): Service
 }
 
 type Query {
   currentService: Service
-  services(after: ServiceWhereUniqueInput, before: ServiceWhereUniqueInput, first: Int, last: Int, skip: Int): [Service!]!
 }
 
 type Service {
