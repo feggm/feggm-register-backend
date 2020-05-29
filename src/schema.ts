@@ -62,6 +62,12 @@ const Query = objectType({
         })) || null
       }
     })
+
+    t.list.field('services', {
+      type: 'Service',
+      authorize: (_root, _args, ctx) => ctx.auth.isAdmin,
+      resolve: async (_root, _args, ctx) => await ctx.prisma.service.findMany()
+    })
   }
 })
 

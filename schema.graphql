@@ -20,6 +20,7 @@ type Mutation {
 
 type Query {
   currentService: Service
+  services: [Service!]!
 }
 
 type Service {
