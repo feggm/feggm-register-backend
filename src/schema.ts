@@ -1,5 +1,5 @@
 import { nexusPrismaPlugin } from 'nexus-prisma'
-import { makeSchema, objectType, fieldAuthorizePlugin, asNexusMethod, intArg, arg } from '@nexus/schema'
+import { makeSchema, objectType, fieldAuthorizePlugin, asNexusMethod, intArg, arg, stringArg } from '@nexus/schema'
 import path from 'path'
 import _ from 'lodash'
 import { GraphQLDate } from 'graphql-iso-date'
@@ -68,7 +68,34 @@ const Query = objectType({
 const Mutation = objectType({
   name: 'Mutation',
   definition (t) {
-    t.crud.createOneVisitor({ alias: 'createVisitor' })
+    t.field('createVisitor', {
+      type: 'Visitor',
+      args: {
+        name: stringArg({ nullable: false }),
+        street: stringArg({ nullable: false }),
+        zip: stringArg({ nullable: false }),
+        city: stringArg({ nullable: false }),
+        phone: stringArg({ nullable: false }),
+        email: stringArg({ nullable: true }),
+        serviceId: intArg({ nullable: false })
+      },
+      resolve: async (_root, args, ctx) => {
+        // check, if the service is already full
+        const { serviceId, ...data } = args
+        const service = await ctx.prisma.service.findOne({ where: { id: serviceId } })
+        const numberOfVisitors = await ctx.prisma.visitor.count({ where: { serviceId } })
+        if (!service || service.numberOfAllowedVisitors <= numberOfVisitors) {
+          throw Error('this service has no places left')
+        }
+
+        return await ctx.prisma.visitor.create({
+          data: {
+            ...data,
+            service: { connect: { id: serviceId } }
+          }
+        })
+      }
+    })
 
     t.field('createService', {
       type: 'Service',
