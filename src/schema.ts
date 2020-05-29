@@ -1,5 +1,5 @@
 import { nexusPrismaPlugin } from 'nexus-prisma'
-import { makeSchema, objectType } from '@nexus/schema'
+import { makeSchema, objectType, fieldAuthorizePlugin, asNexusMethod, intArg, arg } from '@nexus/schema'
 import path from 'path'
 import _ from 'lodash'
 import { GraphQLDate } from 'graphql-iso-date'
@@ -13,9 +13,22 @@ const Service = objectType({
     t.model.serviceStartsAt()
     t.model.registrationStartsAt()
     t.model.numberOfAllowedVisitors()
-    t.model.visitors({
-      pagination: false
+    t.list.field('visitors', {
+      type: 'Visitor',
+      description: 'only authenticated admins can view visitors data',
+      authorize: (_root, _args, ctx) => ctx.auth.isAdmin,
+      resolve: async (root, _args, ctx) => await ctx.prisma.visitor.findMany({
+        where: {
+          serviceId: { equals: root.id }
+        }
+      })
     })
+    // t.model.visitors({
+    //   pagination: true
+    // })
+    // t.model.visitors({
+    //   pagination: false
+    // })
   }
 })
 
@@ -36,10 +49,23 @@ const Visitor = objectType({
 const Query = objectType({
   name: 'Query',
   definition (t) {
-    t.crud.service()
+    // t.crud.service()
     t.crud.services()
-    t.crud.visitor()
-    t.crud.visitors()
+    // t.crud.visitor()
+    // t.crud.visitors()
+    t.field('currentService', {
+      type: 'Service',
+      nullable: true,
+      resolve: async (_root, _args, ctx) => {
+        const now = new Date()
+        return _.first(await ctx.prisma.service.findMany({
+          where: {
+            registrationStartsAt: { lt: now },
+            serviceStartsAt: { gt: now }
+          }
+        })) || null
+      }
+    })
 
     // t.list.field('feed', {
     //   type: 'Post',
