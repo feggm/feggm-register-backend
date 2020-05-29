@@ -1,22 +1,23 @@
 import { nexusPrismaPlugin } from 'nexus-prisma'
-import { intArg, makeSchema, objectType, stringArg } from '@nexus/schema'
+import { makeSchema, objectType } from '@nexus/schema'
+import path from 'path'
 
 const Service = objectType({
   name: 'Service',
-  definition(t) {
+  definition (t) {
     t.model.id()
     t.model.serviceStartsAt()
     t.model.registrationStartsAt()
     t.model.numberOfAllowedVisitors()
     t.model.visitors({
-      pagination: false,
+      pagination: false
     })
-  },
+  }
 })
 
 const Visitor = objectType({
   name: 'Visitor',
-  definition(t) {
+  definition (t) {
     t.model.id()
     t.model.name()
     t.model.street()
@@ -25,12 +26,12 @@ const Visitor = objectType({
     t.model.phone()
     t.model.email()
     t.model.service()
-  },
+  }
 })
 
 const Query = objectType({
   name: 'Query',
-  definition(t) {
+  definition (t) {
     t.crud.service()
     t.crud.services()
     t.crud.visitor()
@@ -61,12 +62,12 @@ const Query = objectType({
     //     })
     //   },
     // })
-  },
+  }
 })
 
 const Mutation = objectType({
   name: 'Mutation',
-  definition(t) {
+  definition (t) {
     t.crud.createOneVisitor({ alias: 'createVisitor' })
     t.crud.createOneService({ alias: 'createService' })
     // t.crud.createOneUser({ alias: 'signupUser' })
@@ -106,27 +107,27 @@ const Mutation = objectType({
     //     })
     //   },
     // })
-  },
+  }
 })
 
 export const schema = makeSchema({
   types: [Query, Mutation, Service, Visitor],
   plugins: [nexusPrismaPlugin()],
   outputs: {
-    schema: __dirname + '/../schema.graphql',
-    typegen: __dirname + '/generated/nexus.ts',
+    schema: path.join(__dirname, '/../schema.graphql'),
+    typegen: path.join(__dirname, '/generated/nexus.ts')
   },
   typegenAutoConfig: {
     contextType: 'Context.Context',
     sources: [
       {
         source: '@prisma/client',
-        alias: 'prisma',
+        alias: 'prisma'
       },
       {
         source: require.resolve('./context'),
-        alias: 'Context',
-      },
-    ],
-  },
+        alias: 'Context'
+      }
+    ]
+  }
 })
