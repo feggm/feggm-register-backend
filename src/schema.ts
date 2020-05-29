@@ -52,6 +52,15 @@ const Visitor = objectType({
   }
 })
 
+const Text = objectType({
+  name: 'Text',
+  definition (t) {
+    t.model.id()
+    t.model.key()
+    t.model.value()
+  }
+})
+
 const Query = objectType({
   name: 'Query',
   definition (t) {
@@ -73,6 +82,25 @@ const Query = objectType({
       type: 'Service',
       authorize: (_root, _args, ctx) => ctx.auth.isAdmin,
       resolve: async (_root, _args, ctx) => await ctx.prisma.service.findMany()
+    })
+
+    t.list.field('texts', {
+      type: 'Text',
+      resolve: async (_root, _args, ctx) => await ctx.prisma.text.findMany()
+    })
+
+    t.field('text', {
+      type: 'String',
+      nullable: true,
+      args: {
+        key: stringArg({ nullable: false })
+      },
+      resolve: async (_root, args, ctx) => _.first(await ctx.prisma.text.findMany({
+        select: { value: true },
+        where: {
+          key: args.key
+        }
+      }))?.value || ''
     })
   }
 })
@@ -160,11 +188,32 @@ const Mutation = objectType({
         return service
       }
     })
+
+    t.field('setText', {
+      type: 'Text',
+      authorize: (_root, _args, ctx) => ctx.auth.isAdmin,
+      args: {
+        key: stringArg({ nullable: false }),
+        value: stringArg({ nullable: false })
+      },
+      resolve: async (_root, args, ctx) => {
+        const { id } = _.first(await ctx.prisma.text.findMany({
+          first: 1,
+          select: { id: true },
+          where: { key: args.key }
+        })) || { id: 0 }
+        return await ctx.prisma.text.upsert({
+          create: { ...args },
+          update: { value: args.value },
+          where: { id }
+        })
+      }
+    })
   }
 })
 
 export const schema = makeSchema({
-  types: [Query, Mutation, Service, Visitor, DateTime],
+  types: [Query, Mutation, Service, Visitor, DateTime, Text],
   plugins: [nexusPrismaPlugin(), fieldAuthorizePlugin()],
   outputs: {
     schema: path.join(__dirname, '/../schema.graphql'),
