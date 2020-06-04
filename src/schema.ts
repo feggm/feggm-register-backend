@@ -12,6 +12,7 @@ const Service = objectType({
     t.model.id()
     t.model.serviceStartsAt()
     t.model.registrationStartsAt()
+    t.model.registrationEndsAt()
     t.model.numberOfAllowedVisitors()
     t.field('numberOfVisitors', {
       type: 'Int',
@@ -72,7 +73,8 @@ const Query = objectType({
         return _.first(await ctx.prisma.service.findMany({
           where: {
             registrationStartsAt: { lt: now },
-            serviceStartsAt: { gt: now }
+            serviceStartsAt: { gt: now },
+            registrationEndsAt: { gt: now }
           }
         })) || null
       }
@@ -164,13 +166,15 @@ const Mutation = objectType({
       args: {
         serviceStartsAt: arg({ type: 'DateTime', nullable: false }),
         registrationStartsAt: arg({ type: 'DateTime', nullable: true }),
+        registrationEndsAt: arg({ type: 'DateTime', nullable: true }),
         numberOfAllowedVisitors: intArg({ nullable: false })
       },
       resolve: async (root, args, ctx) => await ctx.prisma.service.create({
         data: {
           ...args,
           serviceStartsAt: new Date(args.serviceStartsAt),
-          registrationStartsAt: (args.registrationStartsAt && new Date(args.registrationStartsAt)) || new Date()
+          registrationStartsAt: (args.registrationStartsAt && new Date(args.registrationStartsAt)) || new Date(),
+          registrationEndsAt: (args.registrationEndsAt && new Date(args.registrationEndsAt)) || new Date(args.serviceStartsAt)
         }
       })
     })
