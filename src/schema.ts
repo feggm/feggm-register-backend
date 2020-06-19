@@ -44,6 +44,7 @@ const Visitor = objectType({
   definition (t) {
     t.model.id()
     t.model.name()
+    t.model.surname()
     t.model.street()
     t.model.zip()
     t.model.city()
@@ -114,6 +115,7 @@ const Mutation = objectType({
       type: 'Visitor',
       args: {
         name: stringArg({ nullable: false }),
+        surname: stringArg({ nullable: false }),
         street: stringArg({ nullable: false }),
         zip: stringArg({ nullable: false }),
         city: stringArg({ nullable: false }),
@@ -149,6 +151,7 @@ const Mutation = objectType({
         return await ctx.prisma.visitor.create({
           data: {
             name: '-',
+            surname: '-',
             street: '-',
             zip: '-',
             city: '-',
