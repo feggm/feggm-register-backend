@@ -81,6 +81,21 @@ const Query = objectType({
       }
     })
 
+    t.list.field('currentServices', {
+      type: 'Service',
+      nullable: true,
+      resolve: async (_root, _args, ctx) => {
+        const now = new Date()
+        return await ctx.prisma.service.findMany({
+          where: {
+            registrationStartsAt: { lt: now },
+            serviceStartsAt: { gt: now },
+            registrationEndsAt: { gt: now }
+          }
+        }) || null
+      }
+    })
+
     t.list.field('services', {
       type: 'Service',
       authorize: (_root, _args, ctx) => ctx.auth.isAdmin,

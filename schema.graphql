@@ -21,6 +21,7 @@ type Mutation {
 
 type Query {
   currentService: Service
+  currentServices: [Service!]
   services: [Service!]!
   text(key: String!): String
   texts: [Text!]!
