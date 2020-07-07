@@ -126,7 +126,7 @@ const Query = objectType({
 const Mutation = objectType({
   name: 'Mutation',
   definition (t) {
-    t.field('createVisitor', {
+    t.list.field('createVisitor', {
       type: 'Visitor',
       args: {
         name: stringArg({ nullable: false }),
@@ -136,23 +136,26 @@ const Mutation = objectType({
         city: stringArg({ nullable: false }),
         phone: stringArg({ nullable: false }),
         email: stringArg({ nullable: true }),
-        serviceId: intArg({ nullable: false })
+        serviceIds: intArg({ nullable: false, list: true })
       },
       resolve: async (_root, args, ctx) => {
         // check, if the service is already full
-        const { serviceId, ...data } = args
-        const service = await ctx.prisma.service.findOne({ where: { id: serviceId } })
-        const numberOfVisitors = await ctx.prisma.visitor.count({ where: { serviceId } })
-        if (!service || service.numberOfAllowedVisitors <= numberOfVisitors) {
-          throw Error('this service has no places left')
-        }
-
-        return await ctx.prisma.visitor.create({
-          data: {
-            ...data,
-            service: { connect: { id: serviceId } }
+        const { serviceIds, ...data } = args
+        const visitorPromises = _.map(serviceIds, async serviceId => {
+          const service = await ctx.prisma.service.findOne({ where: { id: serviceId } })
+          const numberOfVisitors = await ctx.prisma.visitor.count({ where: { serviceId } })
+          if (!service || service.numberOfAllowedVisitors <= numberOfVisitors) {
+            throw Error('this service has no places left')
           }
+
+          return await ctx.prisma.visitor.create({
+            data: {
+              ...data,
+              service: { connect: { id: serviceId } }
+            }
+          })
         })
+        return await Promise.all(visitorPromises)
       }
     })
 
