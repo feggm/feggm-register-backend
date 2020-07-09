@@ -165,11 +165,13 @@ const Mutation = objectType({
           }
 
           // make sure no other service of the user registration takes place at the same date
-          const dateCode = moment(service.serviceStartsAt).format('YYYY-MM-DD')
-          if (_.includes(usedDates, dateCode)) {
-            throw Error(`the service ${serviceId} takes place at the same date as another service`)
+          if (!service.noDateConflict) {
+            const dateCode = moment(service.serviceStartsAt).format('YYYY-MM-DD')
+            if (_.includes(usedDates, dateCode)) {
+              throw Error(`the service ${serviceId} takes place at the same date as another service`)
+            }
+            usedDates.push(dateCode)
           }
-          usedDates.push(dateCode)
         }
 
         // go through each service and create it
@@ -221,6 +223,7 @@ const Mutation = objectType({
       resolve: async (root, args, ctx) => await ctx.prisma.service.create({
         data: {
           ...args,
+          noDateConflict: !!args.noDateConflict,
           serviceStartsAt: new Date(args.serviceStartsAt),
           registrationStartsAt: (args.registrationStartsAt && new Date(args.registrationStartsAt)) || new Date(),
           registrationEndsAt: (args.registrationEndsAt && new Date(args.registrationEndsAt)) || new Date(args.serviceStartsAt)
