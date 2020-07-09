@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 const prisma = new PrismaClient()
 
-const textDefinitions = {
+export const definitions = {
   appName: 'Gottesdienst Registrierung',
   freePlacePre: 'Noch',
   freePlacePost: 'freie Plätze',
@@ -25,38 +25,56 @@ const textDefinitions = {
   'finish.subtitle': 'Für deine Registrierung',
   'finish.paragraph': 'Wir haben deine Registrierung erfolgreich aufgenommen und freuen uns auf deinen Besuch. Hier noch einmal die wichtigsten Daten für dich:',
   'finish.labelName': 'Dein Name',
-  'finish.labelId': 'Deine Registrierungs ID',
+  'finish.labelAddress': 'Deine Adresse',
+  'finish.labelPhone': 'Deine Telefonnummer',
+  'finish.labelEmail': 'Deine E-Mail-Adresse',
+  'finish.labelId': 'ID',
   'finish.labelService': 'Gottesdienst am',
   'finish.labelTime': 'Uhrzeit',
   'finish.hint': 'Bitte lies dir für deinen Besuch unbedingt auch unser <a href="https://www.feggm.de/wp-content/uploads/2020/06/Abstands-Hygieneregeln_FeGM_2020-06-01.pdf" target="_blank" style="whitespace: nowrap;">📄Hygienekonzept</a> durch. Vielen Dank.',
   'finish.buttonRestart': 'Zum Anfang'
 }
 
-const seed = async () => {
-  const texts = _.map(textDefinitions, (value, key) => ({
-    key,
-    value
-  }))
+export const seed = async (definitions: Record<string, string>): Promise<void> => {
+  try {
+    const texts = _.map(definitions, (value, key) => ({
+      key,
+      value
+    }))
 
-  // delete all keys that have been defined in the seed
-  for (const { key } of texts) {
-    await prisma.text.deleteMany({
-      where: {
-        key
-      }
-    })
-  }
+    // delete all keys that have been defined in the seed
+    for (const { key } of texts) {
+      await prisma.text.deleteMany({
+        where: {
+          key
+        }
+      })
+    }
 
-  // create the defined texts anew
-  for (const text of texts) {
-    await prisma.text.create({
-      data: text
-    })
+    // create the defined texts anew
+    for (const text of texts) {
+      await prisma.text.create({
+        data: text
+      })
+    }
+  } finally {
+    prisma.disconnect()
   }
 }
 
-seed().catch(err => {
-  throw err
-}).finally(() => {
-  prisma.disconnect()
-})
+export const add = async (definitions: Record<string, string>): Promise<void> => {
+  // receive all available texts
+  const allTexts = await prisma.text.findMany()
+
+  // transform to the same form as definitions
+  const transformedAllTexts: Record<string, string|null> = {}
+  for (const textItem of allTexts) {
+    transformedAllTexts[textItem.key] = textItem.value
+  }
+
+  // merge them with the text definitions
+  const mergedTextDefinitions = _.merge({}, definitions, transformedAllTexts)
+
+  // save the merged text definitions
+  await seed(mergedTextDefinitions)
+}

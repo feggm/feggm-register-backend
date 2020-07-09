@@ -9,7 +9,8 @@
     "generate:nexus": "ts-node --transpile-only src/schema",
     "postinstall": "npm -s run generate",
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server",
-    "seed": "ts-node prisma/_seeds/text.ts"
+    "seed": "ts-node prisma/_seeds/seed.ts",
+    "seed-add": "ts-node prisma/_seeds/add.ts"
   },
   "dependencies": {
     "@nexus/schema": "0.13.1",
