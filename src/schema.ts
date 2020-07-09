@@ -3,6 +3,7 @@ import { makeSchema, objectType, fieldAuthorizePlugin, asNexusMethod, intArg, ar
 import path from 'path'
 import _ from 'lodash'
 import { GraphQLDate } from 'graphql-iso-date'
+import moment from 'moment'
 
 const DateTime = asNexusMethod(GraphQLDate, 'dateTime')
 
@@ -140,15 +141,38 @@ const Mutation = objectType({
         serviceIds: intArg({ nullable: false, list: true })
       },
       resolve: async (_root, args, ctx) => {
-        // check, if the service is already full
         const { serviceIds, ...data } = args
-        const visitorPromises = _.map(serviceIds, async serviceId => {
+        const usedDates:Array<string> = []
+
+        // pre loop for error checks
+        for (const serviceId of serviceIds) {
           const service = await ctx.prisma.service.findOne({ where: { id: serviceId } })
-          const numberOfVisitors = await ctx.prisma.visitor.count({ where: { serviceId } })
-          if (!service || service.numberOfAllowedVisitors <= numberOfVisitors) {
-            throw Error('this service has no places left')
+          // check if we this is a valid service
+          if (!service) {
+            throw Error(`the service ${serviceId} does not exist`)
           }
 
+          // check if the registration time is not yet over
+          if (moment().isAfter(service.registrationEndsAt)) {
+            throw Error(`the registration time for service ${serviceId} is over`)
+          }
+
+          // check, if the service is already full
+          const numberOfVisitors = await ctx.prisma.visitor.count({ where: { serviceId } })
+          if (!service || service.numberOfAllowedVisitors <= numberOfVisitors) {
+            throw Error(`the service ${serviceId} has no places left`)
+          }
+
+          // make sure no other service of the user registration takes place at the same date
+          const dateCode = moment(service.serviceStartsAt).format('YYYY-MM-DD')
+          if (_.includes(usedDates, dateCode)) {
+            throw Error(`the service ${serviceId} takes place at the same date as another service`)
+          }
+          usedDates.push(dateCode)
+        }
+
+        // go through each service and create it
+        const visitorPromises = _.map(serviceIds, async serviceId => {
           return await ctx.prisma.visitor.create({
             data: {
               ...data,
