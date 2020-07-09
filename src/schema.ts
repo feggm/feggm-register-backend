@@ -1,5 +1,5 @@
 import { nexusPrismaPlugin } from 'nexus-prisma'
-import { makeSchema, objectType, fieldAuthorizePlugin, asNexusMethod, intArg, arg, stringArg } from '@nexus/schema'
+import { makeSchema, objectType, fieldAuthorizePlugin, asNexusMethod, intArg, arg, stringArg, booleanArg } from '@nexus/schema'
 import path from 'path'
 import _ from 'lodash'
 import { GraphQLDate } from 'graphql-iso-date'
@@ -15,6 +15,7 @@ const Service = objectType({
     t.model.registrationStartsAt()
     t.model.registrationEndsAt()
     t.model.additionalInfo()
+    t.model.noDateConflict()
     t.model.numberOfAllowedVisitors()
     t.field('numberOfVisitors', {
       type: 'Int',
@@ -214,7 +215,8 @@ const Mutation = objectType({
         registrationStartsAt: arg({ type: 'DateTime', nullable: true }),
         registrationEndsAt: arg({ type: 'DateTime', nullable: true }),
         numberOfAllowedVisitors: intArg({ nullable: false }),
-        additionalInfo: stringArg({ nullable: true })
+        additionalInfo: stringArg({ nullable: true }),
+        noDateConflict: booleanArg({ nullable: true })
       },
       resolve: async (root, args, ctx) => await ctx.prisma.service.create({
         data: {

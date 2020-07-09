@@ -13,7 +13,7 @@ scalar DateTime
 
 type Mutation {
   createAnonymousVisitor(serviceId: Int!): Visitor!
-  createService(additionalInfo: String, numberOfAllowedVisitors: Int!, registrationEndsAt: DateTime, registrationStartsAt: DateTime, serviceStartsAt: DateTime!): Service!
+  createService(additionalInfo: String, noDateConflict: Boolean, numberOfAllowedVisitors: Int!, registrationEndsAt: DateTime, registrationStartsAt: DateTime, serviceStartsAt: DateTime!): Service!
   createVisitor(city: String!, email: String, name: String!, phone: String!, serviceIds: [Int!]!, street: String!, surname: String!, zip: String!): [Visitor!]!
   deleteService(id: Int!): Service
   setText(key: String!, value: String!): Text!
@@ -33,6 +33,7 @@ type Service {
   """The number of places that are still left free"""
   freePlaces: Int!
   id: Int!
+  noDateConflict: Boolean!
   numberOfAllowedVisitors: Int!
 
   """The number of places that are already reserved"""
