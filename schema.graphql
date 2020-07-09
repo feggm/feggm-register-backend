@@ -11,10 +11,12 @@ scalar Date
 
 scalar DateTime
 
+scalar Json
+
 type Mutation {
   createAnonymousVisitor(serviceId: Int!): Visitor!
   createService(additionalInfo: String, noDateConflict: Boolean, numberOfAllowedVisitors: Int!, registrationEndsAt: DateTime, registrationStartsAt: DateTime, serviceStartsAt: DateTime!): Service!
-  createVisitor(city: String!, email: String, name: String!, phone: String!, serviceIds: [Int!]!, street: String!, surname: String!, zip: String!): [Visitor!]!
+  createVisitor(additionalData: Json, city: String!, email: String, name: String!, phone: String!, serviceIds: [Int!]!, street: String!, surname: String!, zip: String!): [Visitor!]!
   deleteService(id: Int!): Service
   setText(key: String!, value: String!): Text!
 }
@@ -53,6 +55,7 @@ type Text {
 }
 
 type Visitor {
+  additionalData: Json
   city: String!
   email: String
   id: Int!

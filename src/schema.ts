@@ -1,9 +1,18 @@
 import { nexusPrismaPlugin } from 'nexus-prisma'
-import { makeSchema, objectType, fieldAuthorizePlugin, asNexusMethod, intArg, arg, stringArg, booleanArg } from '@nexus/schema'
+import { makeSchema, objectType, fieldAuthorizePlugin, asNexusMethod, intArg, arg, stringArg, booleanArg, scalarType } from '@nexus/schema'
 import path from 'path'
 import _ from 'lodash'
 import { GraphQLDate } from 'graphql-iso-date'
 import moment from 'moment'
+
+import { GraphQLJSONObject } from 'graphql-type-json'
+
+const Json = scalarType({
+  name: 'Json',
+  serialize: GraphQLJSONObject.serialize,
+  parseValue: GraphQLJSONObject.parseValue,
+  parseLiteral: GraphQLJSONObject.parseLiteral
+})
 
 const DateTime = asNexusMethod(GraphQLDate, 'dateTime')
 
@@ -53,6 +62,7 @@ const Visitor = objectType({
     t.model.city()
     t.model.phone()
     t.model.email()
+    t.model.additionalData()
     t.model.service()
   }
 })
@@ -139,7 +149,8 @@ const Mutation = objectType({
         city: stringArg({ nullable: false }),
         phone: stringArg({ nullable: false }),
         email: stringArg({ nullable: true }),
-        serviceIds: intArg({ nullable: false, list: true })
+        serviceIds: intArg({ nullable: false, list: true }),
+        additionalData: arg({ type: Json })
       },
       resolve: async (_root, args, ctx) => {
         const { serviceIds, ...data } = args
@@ -269,7 +280,7 @@ const Mutation = objectType({
 })
 
 export const schema = makeSchema({
-  types: [Query, Mutation, Service, Visitor, DateTime, Text],
+  types: [Query, Mutation, Service, Visitor, DateTime, Text, Json],
   plugins: [nexusPrismaPlugin(), fieldAuthorizePlugin()],
   outputs: {
     schema: path.join(__dirname, '/../schema.graphql'),
