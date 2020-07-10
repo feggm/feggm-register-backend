@@ -11,6 +11,14 @@ scalar Date
 
 scalar DateTime
 
+type DynamicField {
+  id: Int!
+  key: String!
+  label: String!
+  required: Boolean!
+  type: String!
+}
+
 scalar Json
 
 type Mutation {
@@ -24,6 +32,7 @@ type Mutation {
 type Query {
   currentService: Service
   currentServices: [Service!]
+  dynamicFields: [DynamicField!]
   services: [Service!]!
   text(key: String!): String
   texts: [Text!]!

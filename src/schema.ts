@@ -76,6 +76,17 @@ const Text = objectType({
   }
 })
 
+const DynamicField = objectType({
+  name: 'DynamicField',
+  definition (t) {
+    t.model.id()
+    t.model.key()
+    t.model.label()
+    t.model.type()
+    t.model.required()
+  }
+})
+
 const Query = objectType({
   name: 'Query',
   definition (t) {
@@ -132,6 +143,12 @@ const Query = objectType({
           key: args.key
         }
       }))?.value || ''
+    })
+
+    t.list.field('dynamicFields', {
+      type: 'DynamicField',
+      nullable: true,
+      resolve: async (root, args, ctx) => await ctx.prisma.dynamicField.findMany()
     })
   }
 })
@@ -280,7 +297,7 @@ const Mutation = objectType({
 })
 
 export const schema = makeSchema({
-  types: [Query, Mutation, Service, Visitor, DateTime, Text, Json],
+  types: [Query, Mutation, Service, Visitor, DateTime, Text, Json, DynamicField],
   plugins: [nexusPrismaPlugin(), fieldAuthorizePlugin()],
   outputs: {
     schema: path.join(__dirname, '/../schema.graphql'),
