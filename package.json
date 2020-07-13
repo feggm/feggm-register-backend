@@ -11,13 +11,16 @@
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server",
     "seed": "ts-node prisma/_seeds/seed.ts",
     "seed-add": "ts-node prisma/_seeds/add.ts",
-    "adjust": "ts-node prisma/_tools/adjustRegistrationEnds.ts"
+    "adjust": "ts-node prisma/_tools/adjustRegistrationEnds.ts",
+    "create-services": "ts-node prisma/_tools/createServices.ts"
   },
   "dependencies": {
     "@nexus/schema": "0.13.1",
     "@prisma/client": "2.0.0-beta.6",
+    "@types/args": "^3.0.0",
     "@types/node-fetch": "2.5.7",
     "apollo-server": "2.14.2",
+    "args": "^5.0.1",
     "dotenv": "^8.2.0",
     "env-var": "^6.1.1",
     "graphql": "14.6.0",
