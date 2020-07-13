@@ -14,7 +14,7 @@ export const definitions = {
   'initial.labelFreeSeats': 'Noch freie Plätze',
   'initial.paragraph2': 'Falls du dich lieber telefonisch anmelden möchtest, kannst du das gerne über unsere Anmeldehotline <a href="tel:+4922618071293" style="whitespace: nowrap;">📞02261 / 8071293</a > tun.',
   'initial.paragraph3': 'Nach der aktuellen Hygiene-Richtlinie können zwei Familien den <strong>Eltern-Kind-Raum</strong> nutzen. Wer diese Möglichkeit in Anspruch nehmen möchte, braucht sich nicht online registrieren. Die Vergabe der zwei Familien-Plätze erfolgt <strong>ausschließlich telefonisch</strong> über unsere Anmelde-Hotline.',
-  'initial.noSeats': 'Es tut uns sehr leid, aber die verfügbaren Plätze für die nächsten Gottesdienste sind schon alle belegt. Schau doch nächste Woche noch mal vorbei...',
+  'initial.noSeats': 'Zur Zeit stehen für die Buchung keine freien Plätze zur Verfügung.',
   'initial.buttonGo': 'Los gehts',
   'registration.title': 'Registrierung',
   'registration.subtitle': 'Für den Gottesdienst am',
