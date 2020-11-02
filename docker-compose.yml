@@ -1,0 +1,25 @@
+version: "2"
+services:
+  db:
+    image: mariadb:10.3.22
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - MYSQL_DATABASE=kkm2
+      - MYSQL_USER=kkm2
+      - MYSQL_PASSWORD=foiRcyN2xmeo
+    volumes:
+      - ./database:/var/lib/mysql
+    ports:
+      - 3306:3306
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      - PMA_HOST=db
+    restart: always
+    ports:
+      - 8080:80
+    volumes:
+      - /sessions
+    links:
+      - db
