@@ -12,7 +12,8 @@
     "seed": "ts-node prisma/_seeds/seed.ts",
     "seed-add": "ts-node prisma/_seeds/add.ts",
     "adjust": "ts-node prisma/_tools/adjustRegistrationEnds.ts",
-    "create-services": "ts-node prisma/_tools/createServices.ts"
+    "create-services": "ts-node prisma/_tools/createServices.ts",
+    "anonymize-data": "ts-node prisma/_tools/anonymizeData.ts"
   },
   "dependencies": {
     "@nexus/schema": "0.13.1",
