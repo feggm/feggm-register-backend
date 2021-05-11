@@ -27,7 +27,7 @@
     "graphql": "14.6.0",
     "graphql-iso-date": "^3.6.1",
     "graphql-type-json": "^0.3.2",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "moment": "^2.27.0",
     "nexus-prisma": "0.12.0"
   },
