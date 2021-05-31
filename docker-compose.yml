@@ -2,6 +2,7 @@ version: "2"
 services:
   db:
     image: mariadb:10.3.22
+    restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=my-secret-pw
       - MYSQL_DATABASE=kkm2
@@ -18,7 +19,7 @@ services:
       - PMA_HOST=db
     restart: always
     ports:
-      - 8080:80
+      - 8089:80
     volumes:
       - /sessions
     links:

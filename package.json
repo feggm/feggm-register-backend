@@ -11,7 +11,8 @@
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server",
     "seed": "ts-node prisma/_seeds/seed.ts",
     "seed-add": "ts-node prisma/_seeds/add.ts",
-    "adjust": "ts-node prisma/_tools/adjustRegistrationEnds.ts",
+    "adjust:registrationEnds": "ts-node prisma/_tools/adjustRegistrationEnds.ts",
+    "adjust:numberVisitors": "ts-node prisma/_tools/adjustNumberVisitors.ts",
     "create-services": "ts-node prisma/_tools/createServices.ts",
     "anonymize-data": "ts-node prisma/_tools/anonymizeData.ts"
   },
