@@ -8,7 +8,7 @@
     "generate:prisma": "prisma generate",
     "generate:nexus": "ts-node --transpile-only src/schema",
     "postinstall": "npm -s run generate",
-    "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server",
+    "dev": "ts-node-dev --no-notify --respawn --transpile-only src/server.ts",
     "seed": "ts-node prisma/_seeds/seed.ts",
     "seed-add": "ts-node prisma/_seeds/add.ts",
     "adjust:registrationEnds": "ts-node prisma/_tools/adjustRegistrationEnds.ts",
@@ -21,7 +21,7 @@
     "@prisma/client": "2.0.0-beta.6",
     "@types/args": "^3.0.0",
     "@types/node-fetch": "2.5.7",
-    "apollo-server": "2.14.2",
+    "apollo-server": "^2.25.0",
     "args": "^5.0.1",
     "dotenv": "^8.2.0",
     "env-var": "^6.1.1",
@@ -46,7 +46,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "ts-node": "8.10.1",
-    "ts-node-dev": "1.0.0-pre.44",
+    "ts-node-dev": "^1.1.6",
     "typescript": "3.9.3"
   },
   "prettier": {
