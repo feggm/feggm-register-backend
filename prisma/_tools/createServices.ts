@@ -56,7 +56,7 @@ const create = async () => {
   const availableFutureServiceDates = _.map(availableFutureServices, service => moment(service.serviceStartsAt).format('YYYY-MM-DD'))
 
   // create an array of dates where we need to create services for
-  let datesToCreate = _.times(53, week => moment().day(0).isoWeek(week).format('YYYY-MM-DD'))
+  let datesToCreate = _.times(53, week => moment().day(0).week(week).format('YYYY-MM-DD'))
   datesToCreate = _.filter(datesToCreate, date =>
     moment(date).isAfter(now) &&
     (!_.includes(availableFutureServiceDates, date) || !!flags.add)
@@ -74,6 +74,8 @@ const create = async () => {
       }
     })
   }
+
+  console.log(`${datesToCreate.length} services have been created successfully.`)
 }
 
 create().finally(() => prisma.disconnect())
